@@ -10,13 +10,18 @@ The project is design-first. The owner designs each part and must understand eve
 
 - `src/chicago_streets/`: the package.
 - `tests/`: the pytest suite.
-- `docs/`: how work is done here ([Workflow](docs/Workflow.md)) and how code and prose read ([Style](docs/Style.md)). Design notes in `docs/design/` are the owner's.
+- `docs/`: how code and prose read ([Style](docs/Style.md)). Design notes in `docs/design/` are the owner's.
 
 The repo is public. Nothing secret and nothing personal goes in it: no keys, tokens, emails, home-directory paths or details about anyone's employer.
 
 ## How work is done here
 
-The owner writes the design. An agent turns it into a plan with a flow diagram, the owner approves the plan, and the agent implements it on a branch and opens a GitHub pull request. The owner reviews and merges. The full flow is in [Workflow](docs/Workflow.md).
+Work here is interactive. The owner is learning, so one agent works with the owner in one session, in small steps, and doesn't fan out to subagents.
+
+1. **Design.** The owner writes the design note in `docs/design/`. An agent may answer questions about it or list options, but doesn't write or change a design note unless the owner asks.
+2. **Sketch the shape first.** When a change adds requests, data flows or steps, draw a mermaid `flowchart` or `sequenceDiagram` in chat before writing code, so the owner can check the shape.
+3. **Build in steps the owner can follow.** A failing test that states the behaviour, then the code. Say what each step does and why. Stop when the design doesn't cover something.
+4. **Pull request.** One task per branch, off `main`. Push the branch and open a pull request with `gh pr create`. Watch `gh pr checks` and fix failures on the branch. Never push to `main`, and never merge: the owner does.
 
 ## Principles
 
@@ -29,7 +34,7 @@ The owner writes the design. An agent turns it into a plan with a flow diagram, 
 
 Read only what the task needs:
 
-- **Planning or implementing a design**: [Workflow](docs/Workflow.md) and the owner's design note.
+- **Implementing a design**: the owner's design note.
 - **Writing or changing code**: [Style](docs/Style.md).
 - **Writing docs**: the Documentation section below.
 - **Answering a question about specific code**: the code itself.
@@ -48,6 +53,15 @@ uv run ruff format --check                # formatting
 uv run mypy                               # types, src/ only, strict
 uv run pre-commit install                 # once per clone: the checks above as commit and push hooks
 ```
+
+[`.github/workflows/checks.yml`](.github/workflows/checks.yml) runs on every pull request and push to `main`, on GitHub's hosted runners:
+
+- `checks`: `uv sync --locked`, ruff, the format check, mypy and `pytest --cov`, which fails below the `fail_under` floor in `pyproject.toml`.
+- `gitleaks`: every commit in the history. `.gitleaksignore` lists, by fingerprint, the findings that aren't secrets.
+
+The pre-commit hooks run the same commands: gitleaks, `uv lock --check`, ruff and mypy on commit, and pytest on push. Actions are pinned to commits, and Dependabot proposes weekly bumps at least a week old.
+
+Two Claude Code hooks in `.claude/settings.json` (tested in `tests/test_agent_hooks.py`) block an agent's Bash call: `no-verify` blocks skipping git hooks, and `merge-on-red` blocks `gh pr merge` unless every check passed.
 
 ## Documentation
 

@@ -16,7 +16,7 @@ A fact is stated once, where a tool or a test reads it. Other pages link to it i
 | The shape gates: no namedtuple, frozen keyword-only dataclasses, subprocess only through its owner | [Gates](#gates) | `uv run ruff check`, `tests/test_design_rules.py` |
 | Everything else on this page | this page | review |
 
-Ruff, mypy and the format check pass on the code, and the checks workflow ([Workflow](Workflow.md#checks)) runs them on every pull request and every push to `main`. A change that breaks one is not merged.
+Ruff, mypy and the format check pass on the code, and CI ([`checks.yml`](../.github/workflows/checks.yml)) runs them on every pull request and every push to `main`. A change that breaks one is not merged.
 
 ## Find before you write
 
