@@ -1,0 +1,58 @@
+# The checks AGENTS.md lists, and a gitleaks scan, on every pull request and every push to main.
+# Each action is pinned to the commit its release tag points at, so a new release
+# of an action cannot change what runs here.
+name: checks
+
+on:
+  pull_request:
+    # ready_for_review: a draft runs nothing until it is marked ready.
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+env:
+  # gitleaks v8.30.1, the version .pre-commit-config.yaml pins.
+  GITLEAKS_IMAGE: ghcr.io/gitleaks/gitleaks@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f
+
+concurrency:
+  # A new push to a PR replaces its older run. Each commit on main keeps its own run.
+  group: ${{ github.workflow }}-${{ github.ref == 'refs/heads/main' && github.sha || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  checks:
+    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
+    # GitHub's hosted runner: the repo is public, and a self-hosted runner would run any fork's PR code.
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+        with:
+          python-version: "3.13" # the version the checks pass on here
+      - run: uv sync --locked
+      - run: uv run ruff check
+      - run: uv run ruff format --check
+      - run: uv run mypy
+      - run: uv run pytest -rs --cov --cov-report=term-missing:skip-covered
+      - name: Coverage table in the job summary
+        if: ${{ !cancelled() }}
+        run: uv run coverage report --format=markdown --fail-under=0 >> "$GITHUB_STEP_SUMMARY"
+
+  # Every commit of the history, not only the PR's: a secret removed in a later commit is
+  # still in the history. .gitleaksignore lists the findings that are not secrets.
+  gitleaks:
+    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - run: >-
+          docker run --rm -v "$PWD:/repo:ro" "$GITLEAKS_IMAGE"
+          git /repo --redact --no-banner --verbose

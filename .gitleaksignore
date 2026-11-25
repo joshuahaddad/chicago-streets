@@ -1,0 +1,2 @@
+# Findings gitleaks reports that are not secrets, by fingerprint (commit:file:rule:line),
+# each with a comment saying what the value is.

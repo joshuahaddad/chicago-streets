@@ -1,0 +1,7 @@
+# Allow-list: nothing enters a build context unless named here, so a local .env or
+# other untracked file is never sent to the Docker daemon.
+*
+!pyproject.toml
+!uv.lock
+!README.md
+!src/

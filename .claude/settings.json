@@ -1,0 +1,19 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "test -f \"$CLAUDE_PROJECT_DIR/.claude/hooks/no-verify.py\" || exit 0; python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/no-verify.py\""
+          },
+          {
+            "type": "command",
+            "command": "test -f \"$CLAUDE_PROJECT_DIR/.claude/hooks/merge-on-red.py\" || exit 0; python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/merge-on-red.py\""
+          }
+        ]
+      }
+    ]
+  }
+}
