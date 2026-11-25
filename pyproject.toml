@@ -3,6 +3,8 @@ name = "chicago-streets"
 version = "0.0.0"
 description = "Getting around Chicago safely and reliably, built from public data"
 readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
 requires-python = ">=3.12"
 classifiers = ["Private :: Do Not Upload"]  # PyPI refuses this, so the package cannot be published by accident
 dependencies = []
