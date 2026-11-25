@@ -10,9 +10,9 @@ classifiers = ["Private :: Do Not Upload"]  # PyPI refuses this, so the package 
 dependencies = []
 
 [dependency-groups]
-dev = [  # the test deps (pytest, pytest-cov) and the checks (ruff, mypy, pre-commit)
-    "mypy>=2.4",
-    "pre-commit>=4.7.0",
+dev = [  # the test deps (pytest, pytest-cov) and the checks (ruff, pyright, pre-commit)
+        "pre-commit>=4.7.0",
+    "pyright>=1.1.414",
     "pytest>=8",
     "pytest-cov>=7.1.0",
     "ruff>=0.17.1",
@@ -69,8 +69,38 @@ select = ["E", "F", "B", "I", "SIM", "C90", "G", "LOG", "T20", "TID251", "UP", "
 [tool.ruff.lint.mccabe]
 max-complexity = 10
 
-[tool.mypy]
-files = ["src"]
-python_version = "3.12"
-strict = true
-warn_unreachable = true
+[tool.pyright]
+include = ["src"]
+pythonVersion = "3.12"
+typeCheckingMode = "standard"
+# Standard mode plus strict mode's rules on annotations, overrides, unused and unneeded code and
+# private use, as errors. Strict mode's reportUnknown{Variable,Member,Argument}Type are left out, so
+# a library without type stubs doesn't make every call into it an error.
+reportMissingParameterType = "error"
+reportUnknownParameterType = "error"
+reportUnknownLambdaType = "error"
+reportMissingTypeArgument = "error"
+reportPossiblyUnboundVariable = "error"
+reportFunctionMemberAccess = "error"
+reportIncompatibleMethodOverride = "error"
+reportIncompatibleVariableOverride = "error"
+reportOverlappingOverload = "error"
+reportInconsistentConstructor = "error"
+reportUntypedFunctionDecorator = "error"
+reportUntypedClassDecorator = "error"
+reportUntypedBaseClass = "error"
+reportUnnecessaryCast = "error"
+reportUnnecessaryIsInstance = "error"
+reportUnnecessaryComparison = "error"
+reportUnnecessaryContains = "error"
+reportUnusedImport = "error"
+reportUnusedVariable = "error"
+reportUnusedFunction = "error"
+reportUnusedClass = "error"
+reportDuplicateImport = "error"
+reportPrivateUsage = "error"
+reportConstantRedefinition = "error"
+reportDeprecated = "error"
+reportMatchNotExhaustive = "error"
+reportSelfClsParameterName = "error"
+reportTypeCommentUsage = "error"

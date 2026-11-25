@@ -9,14 +9,14 @@ A fact is stated once, where a tool or a test reads it. Other pages link to it i
 | Fact | Lives in | Checked by |
 |---|---|---|
 | Line length, lint rules, complexity limit | `[tool.ruff]` in `pyproject.toml` | `uv run ruff check` |
-| Type checking scope and strictness | `[tool.mypy]` in `pyproject.toml` | `uv run mypy` |
+| Type checking scope and strictness | `[tool.pyright]` in `pyproject.toml` | `uv run pyright` |
 | Coverage floor | `[tool.coverage.report]` in `pyproject.toml` | `uv run pytest --cov` |
 | Dependencies | `pyproject.toml`, `uv.lock` | `uv lock --check` |
 | What one module does and the rules it keeps | the module's docstring | review |
 | The shape gates: no namedtuple, frozen keyword-only dataclasses, subprocess only through its owner | [Gates](#gates) | `uv run ruff check`, `tests/test_design_rules.py` |
 | Everything else on this page | this page | review |
 
-Ruff, mypy and the format check pass on the code, and CI ([`checks.yml`](../.github/workflows/checks.yml)) runs them on every pull request and every push to `main`. A change that breaks one is not merged.
+Ruff, pyright and the format check pass on the code, and CI ([`checks.yml`](../.github/workflows/checks.yml)) runs them on every pull request and every push to `main`. A change that breaks one is not merged.
 
 ## Find before you write
 
@@ -62,7 +62,7 @@ The base is the [Google Python Style Guide](https://google.github.io/styleguide/
 ### Data and types
 
 - **Structured data is a frozen, keyword-only `dataclasses.dataclass`** ([Gates](#gates)), not a `dict` passed between functions or a `namedtuple` with twenty fields. Config is a typed object read once at start-up. Data parsed from outside (an API response, a request body) is parsed into a typed object at the boundary, and the code past it works only with that object.
-- **Type hints on every function in `src/`.** Ruff `ANN` requires them, and mypy checks `src/` in strict mode. `tests/` is not type-checked.
+- **Type hints on every function in `src/`.** Ruff `ANN` requires them, and pyright checks `src/` with strict mode's annotation rules. `tests/` is not type-checked.
 - **Builtin generics and `|`:** `list[str]`, `dict[str, int]`, `str | None`, `str | Path`, not `List`, `Optional` or `Union`. Ruff's pyupgrade rules (`UP`) enforce it.
 - **The shape comes from the design.** A new schema, record or config object has its fields in the owner's design before anything is built on it.
 

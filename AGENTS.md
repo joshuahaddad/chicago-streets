@@ -50,16 +50,16 @@ uv run pytest                             # all tests
 uv run pytest tests/test_package.py -k name   # a single test
 uv run ruff check                         # lint (see Style)
 uv run ruff format --check                # formatting
-uv run mypy                               # types, src/ only, strict
+uv run pyright                            # types, src/ only
 uv run pre-commit install                 # once per clone: the checks above as commit and push hooks
 ```
 
 [`.github/workflows/checks.yml`](.github/workflows/checks.yml) runs on every pull request and push to `main`, on GitHub's hosted runners:
 
-- `checks`: `uv sync --locked`, ruff, the format check, mypy and `pytest --cov`, which fails below the `fail_under` floor in `pyproject.toml`.
+- `checks`: `uv sync --locked`, ruff, the format check, pyright and `pytest --cov`, which fails below the `fail_under` floor in `pyproject.toml`.
 - `gitleaks`: every commit in the history. `.gitleaksignore` lists, by fingerprint, the findings that aren't secrets.
 
-The pre-commit hooks run the same commands: gitleaks, `uv lock --check`, ruff and mypy on commit, and pytest on push. Actions are pinned to commits, and Dependabot proposes weekly bumps at least a week old.
+The pre-commit hooks run the same commands: gitleaks, `uv lock --check`, ruff and pyright on commit, and pytest on push. Actions are pinned to commits, and Dependabot proposes weekly bumps at least a week old.
 
 Two Claude Code hooks in `.claude/settings.json` (tested in `tests/test_agent_hooks.py`) block an agent's Bash call: `no-verify` blocks skipping git hooks, and `merge-on-red` blocks `gh pr merge` unless every check passed.
 

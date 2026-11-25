@@ -4,7 +4,6 @@ __pycache__/
 build/
 dist/
 .coverage
-.mypy_cache/
 .pytest_cache/
 .ruff_cache/
 # Secrets for local runs: name the variable in docs, never commit the file
