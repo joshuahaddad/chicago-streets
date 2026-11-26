@@ -1,0 +1,25 @@
+# Each ecosystem's weekly bumps arrive as one PR (groups): the actions' commit pins in
+# .github/workflows/ and the packages in uv.lock. A release must be a week old first, so
+# a hijacked release has time to be caught before it is proposed here. The gitleaks image
+# in checks.yml is a `docker run` argument and the gitleaks rev in .pre-commit-config.yaml
+# is a hook pin, which Dependabot does not read; bump those by hand.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    groups:
+      github-actions:
+        patterns: ["*"]
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+  - package-ecosystem: uv
+    directory: /
+    groups:
+      uv:
+        patterns: ["*"]
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
