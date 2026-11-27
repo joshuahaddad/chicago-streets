@@ -59,7 +59,7 @@ uv run pre-commit install                 # once per clone: the checks above as 
 - `checks`: `uv sync --locked`, ruff, the format check, pyright and `pytest --cov`, which fails below the `fail_under` floor in `pyproject.toml`.
 - `gitleaks`: every commit in the history. `.gitleaksignore` lists, by fingerprint, the findings that aren't secrets.
 
-The pre-commit hooks run the same commands: gitleaks, `uv lock --check`, ruff and pyright on commit, and pytest on push. Actions are pinned to commits, and Dependabot proposes weekly bumps at least a week old.
+The pre-commit hooks run the same checks: gitleaks, `uv lock --check`, ruff and pyright on commit, and pytest on push. The ruff hooks fix the staged files instead of only checking them, so a commit can fail because a hook changed a file: read the diff, stage it and commit again. Actions are pinned to commits, and Dependabot proposes weekly bumps at least a week old.
 
 Two Claude Code hooks in `.claude/settings.json` (tested in `tests/test_agent_hooks.py`) block an agent's Bash call: `no-verify` blocks skipping git hooks, and `merge-on-red` blocks `gh pr merge` unless every check passed.
 
