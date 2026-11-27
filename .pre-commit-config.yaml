@@ -1,7 +1,7 @@
-# The checks .github/workflows/checks.yml runs, as git hooks. Each hook runs the same
-# `uv run` command as the workflow, so the tool versions are uv.lock's, not a second pin
-# here. The fast checks run on every commit; pytest runs on push. Install both hook types
-# once per clone:
+# The checks .github/workflows/checks.yml runs, as git hooks, with the tool versions from
+# uv.lock rather than a second pin here. The ruff hooks fix the staged files where the
+# workflow only checks (docs/design/0001-project-setup.md). The fast checks run on every
+# commit; pytest runs on push. Install both hook types once per clone:
 #
 #   uv run pre-commit install
 #
@@ -25,18 +25,20 @@ repos:
         language: system
         files: ^(pyproject\.toml|uv\.lock)$
         pass_filenames: false
+      # The two fixers get the staged file names, so they never edit a file outside the commit.
+      # A hook that changes a file fails the commit: read the diff, stage it, commit again.
+      # --force-exclude keeps ruff's own excludes for files named on the command line.
       - id: ruff-check
-        name: ruff check
-        entry: uv run ruff check
+        name: ruff check --fix
+        entry: uv run ruff check --fix --force-exclude
         language: system
         types_or: [python, pyi]
-        pass_filenames: false
       - id: ruff-format
-        name: ruff format --check
-        entry: uv run ruff format --check
+        name: ruff format
+        entry: uv run ruff format --force-exclude
         language: system
         types_or: [python, pyi, markdown] # ruff format also formats the Python blocks in markdown
-        pass_filenames: false
+      # The whole repo, not the staged files: a signature change breaks callers that aren't staged.
       - id: pyright
         name: pyright
         entry: uv run pyright
