@@ -4,7 +4,7 @@ Guidance for agents (Claude Code, OpenCode and others) working in this repositor
 
 ## What this repo is
 
-chicago-streets is a learning project built on public Chicago data. Its first part is a live CTA (Chicago Transit Authority) bus-arrival service: FastAPI, Postgres, Redis and OpenTelemetry. Later parts are an evaluated LLM analyst and a causal study.
+chicago-streets is a project built on public Chicago data. Its first part is a live CTA (Chicago Transit Authority) bus-arrival service: FastAPI, Postgres, Redis and OpenTelemetry. Later parts are an evaluated LLM analyst and a causal study.
 
 The project is design-first. The owner designs each part and must understand every line that lands. Agents write code to the owner's designs; they do not choose the design.
 
@@ -16,7 +16,7 @@ The repo is public. Nothing secret and nothing personal goes in it: no keys, tok
 
 ## How work is done here
 
-Work here is interactive. The owner is learning, so one agent works with the owner in one session, in small steps, and doesn't fan out to subagents.
+Work here is interactive. The owner checks their understanding of every step before it lands, so the agent works in small steps the owner can follow. Subagents may help, for research, a review or a long check, but the session agent reports what they did and the owner still approves each step.
 
 1. **Design.** The owner writes the design note in `docs/design/`. An agent may answer questions about it or list options, but doesn't write or change a design note unless the owner asks.
 2. **Sketch the shape first.** When a change adds requests, data flows or steps, draw a mermaid `flowchart` or `sequenceDiagram` in chat before writing code, so the owner can check the shape.

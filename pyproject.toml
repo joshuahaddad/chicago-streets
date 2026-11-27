@@ -6,12 +6,12 @@ readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
 requires-python = ">=3.12"
-classifiers = ["Private :: Do Not Upload"]  # PyPI refuses this, so the package cannot be published by accident
+classifiers = ["Private :: Do Not Upload"]
 dependencies = []
 
 [dependency-groups]
-dev = [  # the test deps (pytest, pytest-cov) and the checks (ruff, pyright, pre-commit)
-        "pre-commit>=4.7.0",
+dev = [
+    "pre-commit>=4.7.0",
     "pyright>=1.1.414",
     "pytest>=8",
     "pytest-cov>=7.1.0",
@@ -19,8 +19,6 @@ dev = [  # the test deps (pytest, pytest-cov) and the checks (ruff, pyright, pre
 ]
 
 [build-system]
-# Pinned exactly: uv.lock does not lock the build backend, so a range would build with whatever
-# setuptools is newest that day.
 requires = ["setuptools==84.2.1"]
 build-backend = "setuptools.build_meta"
 
@@ -28,43 +26,55 @@ build-backend = "setuptools.build_meta"
 package-dir = {"" = "src"}
 
 [tool.uv]
-package = true  # src/chicago_streets/ is the package
-default-groups = ["dev"]  # uv run and uv sync keep the dev deps, an installed package does not
+package = true
+default-groups = ["dev"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 
-# Read by `pytest --cov`, which checks.yml runs; a plain `uv run pytest` measures nothing.
 [tool.coverage.run]
 source = ["chicago_streets"]
 
 [tool.coverage.report]
 fail_under = 90
 
-# The code passes these, and .github/workflows/checks.yml runs them on every pull
-# request and every push to main. docs/Style.md says what each rule is for.
 [tool.ruff]
 line-length = 120
 target-version = "py312"
 
 [tool.ruff.lint]
-# UP (pyupgrade) enforces builtin generics (`list[str]`) and `X | None`, everywhere. ANN, an annotation on every
-# parameter and return, applies to src/ only (per-file-ignores; docs/Style.md, Data and types).
-# G and LOG are the logging rules: the message's arguments are passed to the logger, not
-# formatted into it first (no f-string), so a record that is filtered out costs nothing.
-# T20 bans print, and only in tests: a command's output is its stdout, and a test's print is noise in every run.
 # TID251 bans the APIs below, in src/ only: the Gates section of docs/Style.md.
-select = ["E", "F", "B", "I", "SIM", "C90", "G", "LOG", "T20", "TID251", "UP", "ANN"]
+select = [
+    "E", # pycodestyle block
+    "W", 
+    "F", # unused imports, undefined names
+    "I", # import sorting
+    "UP", # pyupgarde   
+    "B", # flake-8 block (bugs/mutable defaults, simplify, annotations, secrets, returns, pathlib, logging, imports)
+    "SIM",
+    "ANN",
+    "S",
+    "RET",
+    "PTH",
+    "G",
+    "LOG",
+    "T20",
+    "TID251",   
+    "C90", # complexity
+]
 
 [tool.ruff.lint.flake8-tidy-imports.banned-api]
 "collections.namedtuple".msg = "use a frozen dataclass constructed by keyword (Style: Gates)"
 "typing.NamedTuple".msg = "use a frozen dataclass constructed by keyword (Style: Gates)"
 "subprocess".msg = "run a program only through the module that owns its interface (Style: Gates)"
 
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
 [tool.ruff.lint.per-file-ignores]
 "!tests/**" = ["T20"]
-# Outside src/ (tests and the Claude hooks) no annotation is required.
-"!src/**" = ["ANN", "TID251"]
+"!src/**" = ["ANN", "TID251", "S101", "S603", "S607"]
 
 [tool.ruff.lint.mccabe]
 max-complexity = 10
