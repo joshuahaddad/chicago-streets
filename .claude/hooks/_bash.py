@@ -1,10 +1,10 @@
 """Shared by the PreToolUse hooks: read a Bash call from stdin and split it into simple commands."""
 
 import json
-import os
 import re
 import shlex
 import sys
+from pathlib import Path
 
 
 def command_of(raw):
@@ -89,7 +89,7 @@ def lead(tokens):
 
 
 def program(token):
-    return os.path.basename(token)
+    return Path(token).name
 
 
 def block(reason):

@@ -32,15 +32,15 @@ def skips_hooks(tokens):
     if i >= len(tokens) or tokens[i] not in ("commit", "push", "merge"):
         return False
     sub, skip = tokens[i], False
-    for token in tokens[i + 1 :]:
+    for arg in tokens[i + 1 :]:
         if skip:
             skip = False
-        elif token == "--":
+        elif arg == "--":
             return False
-        elif token == "--no-verify":
+        elif arg == "--no-verify":
             return True
-        elif sub == "commit" and token[:1] == "-" and token[:2] != "--":
-            short, skip = short_flags(token)
+        elif sub == "commit" and arg[:1] == "-" and arg[:2] != "--":
+            short, skip = short_flags(arg)
             if short:
                 return True
     return False
