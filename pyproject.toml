@@ -73,7 +73,7 @@ quote-style = "double"
 indent-style = "space"
 
 [tool.ruff.lint.per-file-ignores]
-"!tests/**" = ["T20"]
+"!tests/**" = ["T20", "S101"]
 "!src/**" = ["ANN", "TID251"]
 
 [tool.ruff.lint.mccabe]
