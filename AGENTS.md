@@ -16,7 +16,7 @@ The repo is public. Nothing secret and nothing personal goes in it: no keys, tok
 
 ## How work is done here
 
-Work here is interactive. The owner is learning, so one agent works with the owner in one session, in small steps, and doesn't fan out to subagents.
+Work here is interactive. The owner is learning, so the agent works with the owner in small steps the owner can follow. Subagents may help, for research, a review or a long check, but the session agent reports what they did and the owner still approves each step.
 
 1. **Design.** The owner writes the design note in `docs/design/`. An agent may answer questions about it or list options, but doesn't write or change a design note unless the owner asks.
 2. **Sketch the shape first.** When a change adds requests, data flows or steps, draw a mermaid `flowchart` or `sequenceDiagram` in chat before writing code, so the owner can check the shape.
